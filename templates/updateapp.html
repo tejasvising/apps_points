@@ -1,0 +1,86 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+    <!-- Style -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <title>Add App</title>
+  </head>
+  <body>
+  <div class="content">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6 contents">
+          <div class="row justify-content-center">
+            <div class="col-md-12">
+              <div class="form-block">
+                  <div class="mb-4">
+                      <h1>Update App</h1>
+                </div>
+                  <span class="mb-0 text-muted">
+                {% if msg %}
+                    {{ msg | safe }}
+                {% else %}
+                    Login page
+                {% endif %}
+              </span>
+                <form action="{% url 'uprec' mem.id %}" method="post">
+                    {% csrf_token %}
+                  <div class="form-group d-flex mb-5 align-items-center">
+                    <label for="name">Name</label>
+                    <input type="text" value='{{App.name}}' name="name"><!-- {{ form.name }}-->
+                  </div>
+                  <div class="form-group d-flex mb-5 align-items-center">
+                    <label for="link">Link</label>
+                    <input type="text" value='{{App.link}}' name="link">
+                    <!--  {{ form.link}}-->
+                  </div>
+                  <div class="form-group d-flex mb-5 align-items-center">
+                    <label for="category">Category</label>
+                    <input type="text" value='{{App.category}}' name="category" >
+                     <!-- {{ form.category }}-->
+                  </div>
+                  <div class="form-group d-flex mb-5 align-items-center">
+                    <label for="subcategory">Subcategory</label>
+                    <input type="text" value='{{App.subcategory}}' name="subcategory" >
+                    <!--  {{ form.subcategory }}-->
+                  </div>
+                  <div class="form-group d-flex mb-5 align-items-center">
+                    <label for="points">Points</label>
+                    <input type="number" value='{{App.points}}' name="points">
+                      <!--{{ form.points }}-->
+                  </div>
+                  
+                  
+                    <span class="text-error">{{ form.errors }}</span>
+                  <input type="submit"  value="Create" class="btn btn-pill text-white btn-block btn-primary">
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Congratulations</title>
+    <style>
+        body {
+            background-color: #e0f7fa; /* Light aquamarine background */
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .congratulations-container {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h3 {
+            color: #38D39F; /* Theme color */
+            margin-bottom: 2rem;
+        }
+        #new3 {
+            background-color: #38D39F; /* Theme color */
+            border: none;
+            color: white;
+            padding: 0.5rem 2rem;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1.25rem;
+            font-weight: 500;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        #new3:hover {
+            background-color: #32C38D; /* Slightly darker theme color */
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="congratulations-container">
+        <h3>Congratulations for downloading an app!</h3>
+        <a href="/profile"><button id="new3">Profile</button></a>
+    </div>
+</body>
+</html>

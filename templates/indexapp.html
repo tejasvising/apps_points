@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apps Management</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h1 {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        #customers {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #customers th, #customers td {
+            padding: 12px;
+            text-align: left;
+        }
+        #customers th {
+            background-color: #343a40;
+            color: white;
+        }
+        #customers tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        #customers tr:hover {
+            background-color: #ddd;
+        }
+        #customers td {
+            vertical-align: middle;
+        }
+        .btn {
+            border-radius: 50px;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+        }
+        #up {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        #up:hover {
+            background-color: #0056b3;
+        }
+        #del {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        #del:hover {
+            background-color: #c82333;
+        }
+        #new3 {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        #new3:hover {
+            background-color: #218838;
+        }
+        #new4 {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        #new4:hover {
+            background-color: #138496;
+        }
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Apps</h1>
+        <table id="customers" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Link</th>
+                    <th>Category</th>
+                    <th>Subcategory</th>
+                    <th>Points</th>
+                    <th colspan="2" class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for x in mem %}
+                <tr>
+                    <td>{{x.id}}</td>
+                    <td>{{x.name}}</td>
+                    <td>{{x.link}}</td>
+                    <td>{{x.category}}</td>
+                    <td>{{x.subcategory}}</td>
+                    <td>{{x.points}}</td>
+                    {% if user.is_admin %}
+                    <td class="text-center">
+                        <a href="delete/{{x.id}}" class="btn btn-danger" id="del">Delete</a>
+                    </td>
+                    {% endif %}
+                    {% if user.is_customer %}
+                    <td class="text-center">
+                        <a href="addapp/{{x.id}}" class="btn btn-primary" id="up">Add to Profile</a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if user.is_admin %}
+        <div class="text-center">
+            <a href="{% url 'add' %}" class="btn btn-success" id="new3">Add App</a>
+        </div>
+        {% endif %}
+        {% if user.is_customer %}
+        <div class="text-center">
+            <a href="/profile" class="btn btn-success" id="new3">See your profile</a>
+        </div>
+        {% endif %}
+        <div class="text-center mt-4">
+            {% if user.is_authenticated %}
+            <a href="/logout" class="btn btn-info" id="new4">Logout</a>
+           
+            {% else %}
+            <a href="/login" class="btn btn-info" id="new4">Login</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
+</html>
