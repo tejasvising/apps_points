@@ -10,8 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
+from dotenv import load_dotenv
+load_dotenv()
 from pathlib import Path
-
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
@@ -20,10 +22,10 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'b_z73j80aa!3h9s+%ui*ii*bl%(cdw*w-tpukpqngcr7+!_dtw'
+SECRET_KEY = os.environ.get("SECRET_KEY")#'b_z73j80aa!3h9s+%ui*ii*bl%(cdw*w-tpukpqngcr7+!_dtw'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG =os.environ.get("DEBUG",'False').lower()=='true'# True
 
 ALLOWED_HOSTS = []
 
@@ -38,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'account.apps.AccountConfig',
+    'test_without_migrations',
 ]
 
 MIDDLEWARE = [
@@ -75,13 +78,31 @@ WSGI_APPLICATION = 'Role_based_login_system.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+#DATABASES = {
+  #  'default':{
+  #      'ENGINE':'django.db.backends.sqlite3',
+  #      'NAME': BASE_DIR/"db.sqlite3"
+  #  }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'db1',
+    #     'USER':'postgres',
+    #     'TEST':{
+    #         'MIRROR':'default',
+    #     },
+    #     'PASSWORD':'Tejasvi@2001',
+    #     'HOST':'localhost',
+    #     'PORT':''
+    # }
+#}
+# Replace the SQLite DATABASES configuration with PostgreSQL:
+DATABASE_URL=os.environ['DATABASE_URL']
 
+DATABASES = {
+    'default': dj_database_url.parse(DATABASE_URL)
+}
+#DATABASES["default"]=dj_database_url.parse("postgres://db1_z13w_user:2mrVwZmQz3F9CMJ8oApkPbp4QG19q3ZT@dpg-cpdfl3fsc6pc738vo5mg-a/db1_z13w")
+#postgres://db1_z13w_user:2mrVwZmQz3F9CMJ8oApkPbp4QG19q3ZT@dpg-cpdfl3fsc6pc738vo5mg-a.oregon-postgres.render.com/db1_z13w
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
