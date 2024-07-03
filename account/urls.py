@@ -26,6 +26,9 @@ urlpatterns = [
     path('profile/<int:id>/',views.individual,name="individual"),
   #  path('tasks/create/<int:id>/', TaskCreate.as_view(), name='task_create'),
     path('tasks', views.tasks,name='apprec'),
+    #path('approve', views.approval,name='approval_page'),
+    path('approverec', views.admin_approval,name='approval_page'),
+    path('approve', views.approval,name='approval_page'),
    # path('', views.home, name='home'),
     path('addapp/<int:id>/upload/', TaskCreate.as_view(),name='indexapp'),
 ]

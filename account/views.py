@@ -1,43 +1,186 @@
 import json
+from django.forms import modelformset_factory
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+from .forms import ImageForm, TaskForm,TaskFullForm
+from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect
 from .forms import SignUpForm, LoginForm
 from django.contrib.auth import authenticate, login,logout
-from .models import App
+
 # Create your views here.
 from django.http import HttpResponse, JsonResponse
-from .models import Image,Task
+from .models import Image,Task,App
 # Create your views here.
 from rest_framework import viewsets
 from .serializers import AndroidAppSerializer   #, TaskSerializer, ImageSerializer
-from .forms import UserTaskForm
+#from .forms import UserTaskForm
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView,ListAPIView
-
 from account import models
+User = get_user_model()
+def admin_approval(request):
+    task_list = Task.objects.all()
+    arr=[]
+    arr1=[]
+    for x in task_list:
+        if [x.name,x.user_id] in arr:
+            
+            continue
+        else:
+            arr1.append([x.name,x.id,x.is_approved])
+            arr.append([x.name,x.user_id])
+    
+    
+  
+    print(task_list)
+    print(arr)
+    print(arr1)
+    if request.user.is_admin:
+        if request.method == "POST":
+            # Get list of checked box id's
+            print("iaminpost")
+            id_list = request.POST.getlist('boxes')
+            print(request.POST.getlist('boxes'))
+            # Uncheck all events
+            task_list.update(is_approved=False)
 
+            # Update the database
+            arr=[]
+            for x in id_list:
+                
+                Task.objects.filter(pk=int(x)).update(is_approved=True)
+                spector=Task.objects.filter(pk=int(x))
+                for y in spector:
+                    arr.append([y.name,y.user_id])
+                #arr.append([Task.objects.filter(pk=int(x)).name,Task.objects.filter(pk=int(x)).user_id])
+                
+                print("getting id_list")
+            print(arr)
+            for z in arr:
+                Task.objects.filter(name=z[0],user_id=z[1]).update(is_approved=True)
+            # Show Success Message and Redirect
+            messages.success(request, ("Task List Approval Has Been Updated!"))
+            return redirect('indexapp')
+
+
+
+        else:
+            return render(request, 'approval_page.html',{"task": arr1})
+    else:
+        messages.success(request, ("You aren't authorized to view this page!"))
+        return redirect('indexapp')
+
+
+    return render(request, 'events/admin_approval.html')
+
+
+def approval(request):
+    task=Task.objects.all()
+    task_list = Task.objects.all()
+    user=User.objects.all()
+    arr=[]
+    arr1=[]
+    for x in task_list:
+        if [x.name,x.user_id] in arr:
+            
+            continue
+        else:
+            user=User.objects.filter(id=x.user_id)
+            for y in user:
+              arr1.append([x.name,x.id,x.is_approved,y.username])  
+            
+
+            arr.append([x.name,x.user_id])
+    if request.user.is_admin:
+        return render(request,'approval_page.html',{'task':arr1})
+    else:
+        messages.success(request,("you aren't authorised"))
+        return redirect('')
 def logout_view(request):
     logout(request)
     return redirect('indexapp')
 
 class TaskCreate(APIView):
+    def post(self, request, *args, **kwargs):
+        if request.method == "POST":
+            #images will be in request.FILES
+            form = TaskFullForm(request.POST or None, request.FILES or None)
+            print("line35")
+            files = request.FILES.getlist('image')
+            print("line37")
+            print(files)
+            if form.is_valid():
+                print("line39")
+                user = request.user
+                name = form.cleaned_data['name']
+                print("line42")
+                points = form.cleaned_data['points']
+                task_obj = Task.objects.create(user=user,name=name,points=points) #create will create as well as save too in db.
+                print("line45")
+                for f in files:
+                    print("line47")
+                    Image.objects.create(task=task_obj,image=f)
+                    print("line49")
+            else:
+                print("Form invalid")
+            return render(request, 'apprec.html',{'task':Task.objects.all()})
 #     queryset = models.Task.objects.all()
 #     serializer_class = TaskSerializer
 
      #def perform_create(self, serializer):
 #     #    print("iamhere")
 #     #    serializer.save(app=self.request.name)
-     def post(self, request, *args, **kwargs):
-          my_file=request.FILES.get('file')
-          print(my_file)
-          task=Task.objects.create(name=request.data['name'],points=request.data['points'],image=my_file,user=request.user)
-#          print(img.id)
-#          print(request.data['file'])
-#          print(request.data)
-#          task = Task(request.data)
-          task.save()
-          return render(request, 'apprec.html',{'task':Task.objects.all()})#Response(serializer.data, status=status.HTTP_201_CREATED)
+    #  def post(self, request, *args, **kwargs):
+    #     print("some")
+    #     ImageFormSet = modelformset_factory(Image,
+    #                                         form=ImageForm)
+    #     print("noerror in me")
+    #     #'extra' means the number of photos that you can upload   ^
+    #     if request.method == 'POST':
+    #         print("iaminpost")
+    #         taskForm = TaskForm(request.POST)
+    #         formset = ImageFormSet(request.POST, request.FILES,
+    #                             queryset=Image.objects.none())
+        
+    #         print(taskForm.is_valid())
+    #         print(formset.errors,"line 50")
+    #         if taskForm.is_valid() and formset.is_valid():
+    #             print("iamhere")
+    #             task_form = taskForm.save(commit=False)
+    #             task_form.user = request.user
+    #             task_form.save()
+        
+    #             for form in formset.cleaned_data:
+    #                 #this helps to not crash if the user   
+    #                 #do not upload all the photos
+    #                 if form:
+    #                     image = form['image']
+    #                     photo = Image(task=task_form, image=image)
+    #                     photo.save()
+    #             # use django messages framework
+    #             messages.success(request,
+    #                             "Yeeew, check it out on the home page!")
+    #             return render(request, 'apprec.html',{'task':Task.objects.all()})
+    #             # return HttpResponseRedirect("/")
+    #         else:
+    #             print(taskForm.errors, formset.errors,"line 70")
+    #             return render(request, 'apprec.html',{'task':Task.objects.all()})
+    #     else:
+    #         taskForm = TaskForm()
+    #         formset = ImageFormSet(queryset=Image.objects.none())
+    #     return render(request, 'index.html',
+    #                 {'taskForm': taskForm, 'formset': formset})
+    #  def post(self, request, *args, **kwargs):
+    #       my_file=request.FILES.get('file')
+    #       print(my_file)
+    #       task=Task.objects.create(name=request.data['name'],points=request.data['points'],image=my_file,user=request.user)
+
+    #       task.save()
+    #       return render(request, 'apprec.html',{'task':Task.objects.all()})#Response(serializer.data, status=status.HTTP_201_CREATED)
 #          print(task)
 #         #  print(serializer.is_valid())
 #         #  print(serializer.errors)
@@ -67,15 +210,7 @@ class TaskCreate(APIView):
 #         #return render(request,"apprec.html")
 #         return HttpResponse(json.dumps({'message': "Uploaded"}), status=200)
     
-def upload_image(request):
-    if request.method == 'POST':
-        form = UserTaskForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('/')
-    else:
-        form = UserTaskForm()
-    return render(request, 'upload_screenshot.html', {'form': form})
+
 class AndroidAppViewSet(viewsets.ModelViewSet):
     queryset = App.objects.all()
     serializer_class = AndroidAppSerializer
@@ -143,7 +278,10 @@ def individual(request,id):
 def profile(request):
    
     task=Task.objects.filter(user=request.user)
-
+    rtask=Task.objects.filter(user=request.user)
+    for x in rtask:
+        print(x.is_approved)
+    print(task)
     arr=[]
     points=0
     for x in task:
@@ -156,23 +294,25 @@ def profile(request):
         if flag==1:           
             continue
         else:
-            points+=x.points
-            arr.append([x.name,x.id])
-    map={}
-    map1={}
-    for x in task:
-        print(x.name)
-        if(x.name in map1.keys()):
-            continue
-        else:
-            map1[x.name]=[x.points]
-    for x in task:
-        print(x.name)
-        if(x.name in map.keys()):
-            map[x.name].append(x.image)
-        else:
-            map[x.name]=[x.image]
-    return render(request, 'userprofile.html',{'task':arr,'points':points})
+            if x.is_approved:
+                points+=x.points
+            arr.append([x.name,x.id,x.is_approved])
+    # map={}
+    # map1={}
+    # for x in task:
+    #     print(x.name)
+    #     if(x.name in map1.keys()):
+    #         continue
+    #     else:
+    #         map1[x.name]=[x.points]
+    # for x in task:
+    #     print(x.name)
+    #     if(x.name in map.keys()):
+    #         map[x.name].append(x.image)
+    #     else:
+    #         map[x.name]=[x.image]
+    print(arr)
+    return render(request, 'userprofile.html',{'task':arr,'points':points,'rtask':rtask})
 
 def index(request):
     
@@ -279,7 +419,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None and user.is_admin:
                 login(request, user)
-                return redirect('add')
+                return redirect('indexapp')
             elif user is not None and user.is_customer:
                 login(request, user)
                 return redirect('indexapp')

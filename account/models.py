@@ -16,7 +16,7 @@ class App(models.Model):
     points=models.IntegerField()
     user=models.ForeignKey(User,on_delete=models.CASCADE)
 
-class Image(models.Model):
+"""class Image(models.Model):
     image=models.ImageField(upload_to='images/')
     date = models.DateTimeField( auto_now_add=True)
 
@@ -24,16 +24,19 @@ class Image(models.Model):
         ordering=['-date']
 
     def __str__(self):
-        return str(self.date)
+        return str(self.date)"""
     
 class Task(models.Model):
     name = models.CharField(max_length=30)
     points=models.IntegerField()
   #  app = models.ForeignKey(App, on_delete=models.CASCADE)
-    image=models.ImageField(upload_to='images/', blank=True, null=True, default='default.jpg' )
+    #image=models.ImageField(upload_to='images/', blank=True, null=True, default='default.jpg' )
     user=models.ForeignKey(User,on_delete=models.CASCADE)
+    is_approved=models.BooleanField(default=False)
 
-        
+class Image(models.Model):
+    task = models.ForeignKey(Task,on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='images/',null=True,blank=True)       
 # class Task(models.Model):
 #     author = models.ForeignKey(User, on_delete=models.CASCADE)
 #     name = models.CharField(max_length=100)

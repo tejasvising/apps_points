@@ -117,6 +117,7 @@
                     <td class="text-center">
                         <a href="delete/{{x.id}}" class="btn btn-danger" id="del">Delete</a>
                     </td>
+                    
                     {% endif %}
                     {% if user.is_customer %}
                     <td class="text-center">
@@ -131,6 +132,10 @@
         <div class="text-center">
             <a href="{% url 'add' %}" class="btn btn-success" id="new3">Add App</a>
         </div>
+        <br>
+        <div class="text-center">
+            <a href="/approve" class="btn btn-success" id="new4">Approve apps downloaded by user</a>
+        </div>
         {% endif %}
         {% if user.is_customer %}
         <div class="text-center">
@@ -144,6 +149,7 @@
             {% else %}
             <a href="/login" class="btn btn-info" id="new4">Login</a>
             {% endif %}
+            <br>
         </div>
     </div>
 

@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")#'b_z73j80aa!3h9s+%ui*ii*bl%(cdw*w-tpuk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG =os.environ.get("DEBUG",'False').lower()=='true'# True
 
-ALLOWED_HOSTS =os.environ.get('ALLOWED_HOSTS').split(" ") # []
+ALLOWED_HOSTS =[] #os.environ.get('ALLOWED_HOSTS').split(" ") # []
 
 
 # Application definition
@@ -99,6 +99,17 @@ WSGI_APPLICATION = 'Role_based_login_system.wsgi.application'
 DATABASE_URL=os.environ['DATABASE_URL']
 
 DATABASES = {
+#    'default':{   'ENGINE': 'django.db.backends.postgresql_psycopg2',
+
+#         'NAME': 'db1',
+
+#         'USER': 'postgres',
+
+#         'PASSWORD': 'Tejasvi@2001',
+
+#         'HOST': 'localhost',
+
+#         'PORT': '5432',}
     'default': dj_database_url.parse(DATABASE_URL)
 }
 #DATABASES["default"]=dj_database_url.parse("postgres://db1_z13w_user:2mrVwZmQz3F9CMJ8oApkPbp4QG19q3ZT@dpg-cpdfl3fsc6pc738vo5mg-a/db1_z13w")

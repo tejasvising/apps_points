@@ -53,38 +53,54 @@
     </style>
 </head>
 <body>
+    <form action=" " method=POST>
+        {% csrf_token %}
 <div class="content py-5">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card shadow-lg">
-                    <div class="card-header text-center">
-                        <h3 class="mb-0">Add Screenshots of App</h3>
-                    </div>
-                    <div class="card-body">
-                        <form enctype='multipart/form-data' action="{% url 'apprec' mem.id %}" method="post">
-                       <!-- <form enctype='multipart/form-data' action="{% url 'apprec' mem.id %}" method="post" class="dropzone" id="my-dropzone" >-->
-                            {% csrf_token %}
-                            <input type="hidden" name="app" value="{{ mem.id }}">
-                            <input type="hidden" name='name' value="{{ mem.name }}">
-                            <input type="hidden" name='link' value="{{ mem.link }}">
-                            <input type="hidden" name='category' value="{{ mem.category }}">
-                            <input type="hidden" name='subcategory' value="{{ mem.subcategory }}">
-                            <input type="hidden" name='points' value="{{ mem.points }}">
-
-                            <div class="form-group">
-                                <label for="file" class="form-label">Upload Screenshots</label>
-                                <div class="fallback">
-                                    <input name="image" type="file" multiple class="form-control-file"/>
-                                </div>
-                            </div>
-                            <div class="text-error">{{ form.errors }}</div>
-                            <div class="form-group text-center">
-                                <input type="submit" value="Create" class="btn btn-primary btn-lg btn-block">
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                
+                    
+                        {% if user.is_admin %}
+                      
+                  
+                    <table class="table table-striped table-hover table-bordered">
+                        <thead>
+                          <tr>
+                            <th scope="col">Task Name</th>
+                            <th scope="col">User Name</th>
+                            <th scope="col">Approved</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                      {% for x in task %}
+                            <tr>
+                                <td>{{x.0}}</td>
+                                <td>{{x.3}}</td>
+                                <td>
+                                    {% if x.2 %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" checked="checked" value={{x.1}} name="boxes">
+                                    </div>
+                                    {% else %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value={{x.1}} name="boxes">
+                                    </div>
+                                    {% endif %}
+                      
+                                </td>
+                            </tr>
+                      {% endfor %}
+                      
+                      
+                       </tbody>
+                      </table>
+                      {% endif %}
+                      <br/>
+                      <button class='btn btn-secondary' type="submit">Update Approval</button>
+                    </form>
+                      
+                      
             </div>
         </div>
     </div>

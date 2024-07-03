@@ -137,7 +137,8 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th colspan="2" id="mid">Action</th>
+                    <th  id="mid">Action</th>
+                    <th  id="status">Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -149,6 +150,13 @@
                         <a href="profile/{{ x.1 }}">
                             <button>See Detail</button>
                         </a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if x.2 %}
+                        Approved by admin
+                        {% else %}
+                        Approval Pending
                         {% endif %}
                     </td>
                 </tr>
